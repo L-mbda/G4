@@ -5,40 +5,29 @@
 """
 
 # Modules to import
-from colorama import Fore, Back, Style, init
-from datetime import datetime
+from colorama import Fore, init
 from pathlib import Path
 import library.functions
-import library.game
-import questionary
+import pwinput
 
 # Flags
-saveCheck = False
+setup = False
 
-# Functions to clear and for saves
-library.functions.clear();
+# Functions to clear and for checking setup
+library.functions.clear()
 init()
-saveFolderCheck = Path('saves').is_dir()
-if saveFolderCheck:
-  saveCheck = True
 
-# Saved applications and functions
-print(f"""{Fore.BLUE}𝐆𝟒
-{Fore.RESET}==========================
-{Fore.LIGHTGREEN_EX}©{datetime.now().strftime('%Y')} de-y. All Rights Reserved.{Fore.RESET}
-""")
+setup_check = Path('user').is_dir()
+if (not setup_check):
+  print(f"""{Fore.GREEN}Welcome to {Fore.CYAN}G4{Fore.RESET}.
 
-menu_choice = questionary.select(
-    "What would you like to do?",
-    choices=["Start a new game" if not saveCheck else "Continue playing", "Settings", "Credits"],
-).ask()
-
-if menu_choice == "Start a new game":
-  print()
-  library.game.startGame()
-elif menu_choice == 'Credits':
-  library.functions.clear();
-  print(f"{Fore.BLUE}𝐆𝟒\n{Fore.RESET}A cli text-based game that replicates the experience of original games. Created and developed with ❤️  from de-y.\n\n")
-elif menu_choice == 'Settings':
-  library.functions.clear();
-  print(f"{Fore.BLUE}𝐆𝟒{Fore.RESET} | Settings\n\n")
+  Let's create your account.
+  """)
+  while True:
+    username = input(f"{Fore.MAGENTA} Username{Fore.RESET}: ")
+    password = pwinput.pwinput(f"{Fore.YELLOW} Password{Fore.RESET}: ")
+    confirm_password = pwinput.pwinput(f"{Fore.YELLOW} Confirm Password{Fore.RESET}: ")
+    if password == confirm_password:
+      break
+    else:
+      print(f"\n{Fore.GREEN}The password isn\'t confirmed. Please reconfirm the password before continuing.")

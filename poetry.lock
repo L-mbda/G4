@@ -26,6 +26,16 @@ files = [
 wcwidth = "*"
 
 [[package]]
+name = "pwinput"
+version = "1.0.3"
+description = "A cross-platform Python module that displays **** for password input. Works on Windows, unlike getpass. Formerly called stdiomask."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pwinput-1.0.3.tar.gz", hash = "sha256:ca1a8bd06e28872d751dbd4132d8637127c25b408ea3a349377314a5491426f3"},
+]
+
+[[package]]
 name = "questionary"
 version = "2.0.1"
 description = "Python library to build pretty command line user prompts ⭐️"
@@ -53,4 +63,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b62599adc9a96a43b5e01c847889528b12cb37e5b38e6a0f062d1b7c1dce6142"
+content-hash = "5cbf0bb3d76474305572e0d375ba6a33229735b345e9149a327b1adfd3368fad"
