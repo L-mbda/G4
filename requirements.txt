@@ -1,1 +1,8 @@
 colorama==0.4.6
+Nuitka==2.4.5
+ordered-set==4.1.0
+prompt-toolkit==3.0.36
+pwinput==1.0.3
+questionary==2.0.1
+wcwidth==0.2.13
+zstandard==0.23.0
