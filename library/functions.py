@@ -1,7 +1,9 @@
 # Modules
 from colorama import Fore, init
 from pathlib import Path
-import sys, os, hashlib
+import os, hashlib, binascii, sys
+
+working_directory = os.getcwd()
 
 # Functions
 def clear():
@@ -24,16 +26,22 @@ def createAccount(username, password, user_type):
     masterUser.write(f'{username}\n')
     masterUser.close()
     os.chdir(f'./{username}')
+    salt = binascii.b2a_hex(os.urandom(20))
+    # Password
     passwordWriter = open('credentials.g4','w')
     sha = hashlib.new('sha3_512')
-    sha.update(password.encode())
+    sha.update(f'{str(salt)}{password}'.encode())
     passwordWriter.write(sha.hexdigest())
     passwordWriter.close()
+    saltWriter = open('salt.g4', 'w')
+    saltWriter.write(str(salt))
+    saltWriter.close()
     roleSetter = open('account.g4', 'w')
     roleSetter.write('owner'.encode().hex())
     roleSetter.close()
     os.chdir(os.getcwd())
     print(f"\n{Fore.BLUE}Created owner account successfully.")
+    return 'CREATED_OWNER'
   elif user_type == 'admin':
     if (not Path(username).is_dir()):
       os.makedirs(username)
@@ -41,27 +49,64 @@ def createAccount(username, password, user_type):
     privileges.write(f'{username}\n')
     privileges.close()
     os.chdir(f'./{username}')
+    salt = binascii.b2a_hex(os.urandom(20))
+    # Password
     passwordWriter = open('credentials.g4','w')
     sha = hashlib.new('sha3_512')
-    sha.update(password.encode())
+    sha.update(f'{str(salt)}{password}'.encode())
     passwordWriter.write(sha.hexdigest())
     passwordWriter.close()
+    saltWriter = open('salt.g4', 'w')
+    saltWriter.write(str(salt))
+    saltWriter.close()
     roleSetter = open('account.g4', 'w')
     roleSetter.write('admin'.encode().hex())
     roleSetter.close()
     os.chdir(os.getcwd())
     print(f"\n{Fore.BLUE}Created administrator account successfully.")
+    return 'CREATED_ADMIN'
   else:
     if (not Path(username).is_dir()):
       os.makedirs(username)
     os.chdir(f'./{username}')
+    salt = binascii.b2a_hex(os.urandom(20))
+    # Password
     passwordWriter = open('credentials.g4','w')
     sha = hashlib.new('sha3_512')
-    sha.update(password.encode())
+    sha.update(f'{str(salt)}{password}'.encode())
+    passwordWriter.write(sha.hexdigest())
+    passwordWriter.close()
+    saltWriter = open('salt.g4', 'w')
+    saltWriter.write(str(salt))
+    saltWriter.close()
     roleSetter = open('account.g4', 'w')
     roleSetter.write('user'.encode().hex())
     roleSetter.close()
     os.chdir(os.getcwd())
-    passwordWriter.write(sha.hexdigest())
-    passwordWriter.close()
     print(f"\n{Fore.BLUE}Created account successfully.")
+    return 'CREATED_USER'
+
+def login(username, password):
+  os.chdir('./user')
+  user_check = Path(username).is_dir()
+  if username == '' or username == ' ':
+    os.chdir(working_directory)
+    return ['LOGIN_FAILED']
+  if not user_check:
+    os.chdir(working_directory)
+    return ['LOGIN_FAILED']
+  os.chdir(f'./{username}')
+  saltManager = open('salt.g4','r')
+  salt = saltManager.readlines()[0]
+  saltManager.close()
+  passwordManager = open('credentials.g4','r')
+  password_linear = passwordManager.readlines()[0]
+  passwordManager.close()
+  sha = hashlib.new('sha3_512')
+  sha.update(f'{str(salt)}{password}'.encode())
+  if sha.hexdigest() == password_linear:
+    os.chdir(working_directory)
+    return ['LOGIN_SUCCESS']
+  else:
+    os.chdir(working_directory)
+    return ['LOGIN_FAILED']
